@@ -12,6 +12,20 @@ Tunesynctool supports the following services:
 
 Support for other services is planned, however the current focus is on getting the self-hostable service to a stable state.
 
+## Docker Compose Project (RG Edit)
+
+Env file:
+```
+APP_HOST=http://127.0.0.1:8080 # Frontend port
+SUBSONIC_BASE_URL=https://listen.ramgoat.ca
+SUBSONIC_PORT=443
+SPOTIFY_CLIENT_ID=f62***0df # 'Navidrome' app in Spotify Developers
+SPOTIFY_CLIENT_SECRET=70a***f99 # 'Spotify App Secret: Navidrome' item in 1Password
+```
+
+**IMPORTANT**:
+- A `SPOTIFY_REDIRECT_URI` environment variable is not supported.  It's generated from `APP_HOST` and `API_BASE_URL` (the latter has an app-specified default that doesn't need to be changed)
+
 ## Stability
 
 The project is under heavy development and contains bugs. Use at your own discretion.

@@ -71,6 +71,10 @@ const fetchPlaylistTracks = async () => {
     return;
   }
 
+  if (!playlistIdAndProvider.value) {
+    return;
+  }
+
   const { provider, provider_id } = playlistIdAndProvider.value;
 
   if (!provider || !provider_id) {

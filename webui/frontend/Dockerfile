@@ -18,8 +18,8 @@ RUN npm run build
 
 FROM nginx:1.29.1 AS runtime
 
-# Replace the default server configuration to support client-side routing
-RUN printf 'server {\n    listen 80;\n    server_name _;\n\n    root /usr/share/nginx/html;\n    index index.html;\n\n    location / {\n        try_files $uri $uri/ /index.html;\n    }\n\n    location /assets/ {\n        add_header Cache-Control "public, max-age=31536000, immutable";\n    }\n}\n' > /etc/nginx/conf.d/default.conf
+# Replace the default server configuration to support client-side routing and API proxying
+RUN printf 'server {\n    listen 80;\n    server_name _;\n\n    root /usr/share/nginx/html;\n    index index.html;\n\n    # Proxy API requests to the backend\n    location /api/ {\n        proxy_pass http://api:8000;\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Forwarded-Proto $scheme;\n    }\n\n    location / {\n        try_files $uri $uri/ /index.html;\n    }\n\n    location /assets/ {\n        add_header Cache-Control "public, max-age=31536000, immutable";\n    }\n}\n' > /etc/nginx/conf.d/default.conf
 
 COPY --from=build /app/dist /usr/share/nginx/html
 

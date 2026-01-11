@@ -15,6 +15,7 @@ services:
       - api
     networks:
       - frontend
+    restart: unless-stopped
 
   api:
     container_name: tunesynctool-api
@@ -22,30 +23,32 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
       # Database - do not modify unless you know what you're doing
       DB_HOST: mysql
       DB_PORT: 3306
       DB_NAME: tunesynctool
       DB_USER: tunesynctool
-      DB_PASSWORD: tunesynctool
+      DB_PASSWORD: ${DB_PASSWORD}
 
       # Application configuration - you should change these
-      APP_SECRET: your_app_secret
-      APP_HOST: your_app_host
-      ADMIN_PASSWORD: changeme
-      ENCRYPTION_KEY: your_encryption_key
-      ENCRYPTION_SALT: your_encryiption_salt
+      APP_SECRET: ${APP_SECRET}
+      APP_HOST: ${APP_HOST}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      ENCRYPTION_SALT: ${ENCRYPTION_SALT}
 
       # Warning! You have to configure at least one music service for the app to run!
 
       # Spotify OAuth - uncomment and set these if you plan to use the Spotify integration
-      # SPOTIFY_CLIENT_ID:
-      # SPOTIFY_CLIENT_SECRET:
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+      SPOTIFY_REDIRECT_URI: ${SPOTIFY_REDIRECT_URI}
 
       # Subsonic - uncomment and set these if you plan to use the Subsonic integration
-      # SUBSONIC_BASE_URL:
-      # SUBSONIC_PORT:
-      # SUBSONIC_LEGACY_AUTH: false
+      SUBSONIC_BASE_URL: ${SUBSONIC_BASE_URL}
+      SUBSONIC_PORT: ${SUBSONIC_PORT}
+      SUBSONIC_LEGACY_AUTH: false
 
       # Google OAuth - uncomment and set these if you plan to use the YouTube Music integration
       # GOOGLE_CLIENT_ID:
@@ -64,6 +67,7 @@ services:
     networks:
       - frontend
       - backend
+    restart: unless-stopped
 
   # MySQL Database for storing basically everything persistent
   mysql:
@@ -84,6 +88,7 @@ services:
       timeout: 5s
       retries: 20
       start_period: 20s
+    restart: unless-stopped
 
   # Redis for caching and background tasks
   redis:
@@ -96,6 +101,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+    restart: unless-stopped
 
   # RedisInsight for inspecting Redis data (for development purposes)
 #  redisinsight:
